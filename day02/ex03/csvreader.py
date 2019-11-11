@@ -7,21 +7,20 @@ class CsvReader():
         self.header = header
         self.skip_top = skip_top
         self.skip_bottom = skip_bottom
+        self.csv_lines = []
         self.data = []
-        self.table = []
         self.corrupted = self.parse_csv()
 
     def parse_csv(self):
         self.csv_lines = [line for line in self.file]
         row_count = len(self.csv_lines)
-        print("rows:" + str(row_count))
         col_count = len(self.csv_lines[0].split(self.sep))
         if self.header:
-            self.data[0] = [self.csv_lines[0]]
+            self.data.append(self.csv_lines[0])
             self.csv_lines.pop(0)
         self.csv_lines = self.csv_lines[self.skip_top:]
         last_line = row_count - self.skip_bottom
-        for i, l in enumerate(self.data):
+        for i, l in enumerate(self.csv_lines):
             line = [e.strip() for e in filter(lambda x: x != '\n', l.split(self.sep))]
             if len(line) != col_count:
                 return True
@@ -47,18 +46,10 @@ class CsvReader():
 
 
 if __name__ == "__main__":
-    #with CsvReader('good.csv') as file:
-    #    data = file.getdata()
-    #    header = file.getheader()
-        #print(str(data[2]))
-        #print(len(data[2]))
-    #with CsvReader('bad.csv') as file:
-    #    if file == None:
-    #        print("File is corrupted")
     sys.argv.pop(0)
     if not len(sys.argv):
         exit()
-    with CsvReader(sys.argv[0]) as file:
+    with CsvReader(sys.argv[0], skip_top=1) as file:
         if file is None:
             print("File is corrupted")
         else:
