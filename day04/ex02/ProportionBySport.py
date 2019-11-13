@@ -2,9 +2,9 @@ import pandas as pd
 from FileLoader import FileLoader
 
 def proportionBySport(df, year, sport, gender):
-    res = 0.0
-
-    return res
+    frac = len(df.loc[(df.Year == year) & (df.Sport == sport) & (df.Sex == gender), 'Name'].unique())
+    total = len(df.loc[(df.Year == year) & (df.Sex == gender), 'Name'].unique())
+    return frac / total
 
 if __name__ == '__main__':
     fl = FileLoader()
