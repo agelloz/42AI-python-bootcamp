@@ -1,39 +1,54 @@
-from FileLoader import FileLoader
-from matplotlib import pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+import sys
+sys.path.append('../ex00')
+from FileLoader import FileLoader
 
 class MyPlotLib:
 
     @staticmethod
     def histogram(data, features):
-        plt.plot() 
-        pass
+        features = [f for f in features if np.issubdtype(data[f].dtype, np.number)]
+        data[features].hist() 
+        plt.show()
 
     @staticmethod
     def density(data, features):
-        pass
+        features = [f for f in features if np.issubdtype(data[f].dtype, np.number)]
+        data[features].plot.kde(alpha=0.5) 
+        plt.show()
 
     @staticmethod
     def pair_plot(data, features):
-        pass
+        features = [f for f in features if np.issubdtype(data[f].dtype, np.number)]
+        pd.plotting.scatter_matrix(data[features], alpha=0.2)
+        plt.show()
 
     @staticmethod
     def box_plot(data, features):
-        pass
+        features = [f for f in features if np.issubdtype(data[f].dtype, np.number)]
+        data[features].plot.box()
+        plt.show()
 
 if __name__ == '__main__':
     fl = FileLoader()
     df = fl.load('../resources/athlete_events.csv')
     
-    years = df['Year'].drop_duplicates().sort_values()
-    print(repr(years))
-    print(type(years))
-    
-    tennis_medals = df.loc[(df.Sport == 'Tennis') & (df.Medal != np.nan) , ['Year', 'Medal']].dropna()
-    tennis_medals = tennis_medals.groupby('Year').size()
-    print(repr(tennis_medals))
-    print(type(tennis_medals))
+    sample = pd.pivot_table(df, index='Year', values=['Medal', 'Team', 'Age', 'City'], 
+            aggfunc={'Medal':'count', 'Team':'count', 'Age':np.mean, 'City':'first'})
+    print(sample)
     
     mpl = MyPlotLib()
-    mpl.histogram(df, {'Years': years, 'Medals': tennis_medals})
+
+    mpl.histogram(sample, ['Age'])
+    mpl.histogram(sample, ['Medal', 'City', 'Team'])
+
+    mpl.density(sample, ['Age'])
+    mpl.density(sample, ['Medal', 'City', 'Team'])
+    
+    mpl.pair_plot(sample, ['Age'])
+    mpl.pair_plot(sample, ['Medal', 'City', 'Team'])
+
+    mpl.box_plot(sample, ['Age'])
+    mpl.box_plot(sample, ['Medal', 'City', 'Team'])

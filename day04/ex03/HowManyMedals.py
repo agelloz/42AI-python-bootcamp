@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import sys
+sys.path.append('../ex00')
 from FileLoader import FileLoader
 
 def howManyMedals(df, name):

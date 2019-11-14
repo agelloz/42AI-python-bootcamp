@@ -1,4 +1,6 @@
 import pandas as pd
+import sys
+sys.path.append('../ex00')
 from FileLoader import FileLoader
 
 def proportionBySport(df, year, sport, gender):

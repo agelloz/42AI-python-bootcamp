@@ -1,4 +1,6 @@
 import numpy as np
+import sys
+sys.path.append('../ex00')
 from FileLoader import FileLoader
 
 def youngestFellah(df, year):
